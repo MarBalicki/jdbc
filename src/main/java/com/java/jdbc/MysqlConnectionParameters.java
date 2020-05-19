@@ -41,7 +41,7 @@ public class MysqlConnectionParameters {
         InputStream jdbcPropertiesStream = this.getClass().getResourceAsStream(MYSQL_PROPERTIES_FILENAME);
         if (jdbcPropertiesStream == null) {
             System.err.println("Brak pliku konfiguracyjnego w resources. Nazwa brakującego pliku jdbc.properties");
-            System.exit(12);
+            System.exit(99);
         }
         properties.load(jdbcPropertiesStream);
         return properties;

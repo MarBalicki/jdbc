@@ -11,9 +11,10 @@ import lombok.NoArgsConstructor;
 @Builder
 
 public class Pet {
+    private Long id;
     private String name;
     private int age;
     private String ownerName;
     private double weight;
-    boolean pureRace;
+    private boolean pureRace;
 }
