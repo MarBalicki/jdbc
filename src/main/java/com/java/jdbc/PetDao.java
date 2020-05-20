@@ -63,7 +63,7 @@ public class PetDao {
 //                connection.close();
 //            }
             connection = mysqlConnection.getConnection();
-            connection.createStatement().execute(PetsTableQueries.CREATE_DATABASE_QUERY);
+//            connection.createStatement().execute(PetsTableQueries.CREATE_DATABASE_QUERY);
             connection.createStatement().execute(PetsTableQueries.CREATE_TABLE_QUERY);
             statement = connection.prepareStatement(PetsTableQueries.INSERT_PET_QUERY, Statement.RETURN_GENERATED_KEYS);
             dataStatement(pet, statement);
