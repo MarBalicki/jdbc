@@ -2,7 +2,7 @@ package com.java.jdbc;
 
 public interface PetsTableQueries {
     String CREATE_DATABASE_QUERY = "CREATE DATABASE IF NOT EXISTS `pets_jdbc`;";
-    String CREATE_TABLE_QUERY = "CREATE TABLE IF NOT EXISTS `petsCopy` (\n" +
+    String CREATE_TABLE_QUERY = "CREATE TABLE IF NOT EXISTS `pets` (\n" +
             "`id` INT AUTO_INCREMENT PRIMARY KEY, \n" +
             "`name` VARCHAR(30) NOT NULL, \n" +
             "`age` INT NOT NULL, \n" +

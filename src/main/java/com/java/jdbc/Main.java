@@ -10,32 +10,32 @@ public class Main {
     public static void main(String[] args) throws SQLException {
         PetDao dao = new PetDao();
 
-//        Pet pet = Pet.builder()
-//                .name("Abi")
-//                .age(1)
-//                .ownerName("Kamil")
-//                .weight(1.9)
-//                .pureRace(true)
-//                .id(10L)
-//                .build();
-//        dao.updatePet(pet);
-//        getAllPets(dao);
+        Pet pet = Pet.builder()
+                .name("Abi")
+                .age(1)
+                .ownerName("Kamil")
+                .weight(1.9)
+                .pureRace(true)
+//                .id(13L)
+                .build();
+        dao.addToDataBase(pet);
+        getAllPets(dao);
 
-        Scanner scanner = new Scanner(System.in);
-        String komenda;
-        do {
-            System.out.println("Wybierz polecenie: [add/list/update/delete/quit]");
-            komenda = scanner.nextLine();
-            if (komenda.equalsIgnoreCase("add")) {
-                addPet(dao, scanner);
-            } else if (komenda.equalsIgnoreCase("list")) {
-                getAllPets(dao);
-            } else if (komenda.equalsIgnoreCase("update")) {
-                updatePet(dao, scanner);
-            } else if (komenda.equalsIgnoreCase("delete")) {
-                deletePet(dao, scanner);
-            }
-        } while (!komenda.equalsIgnoreCase("quit"));
+//        Scanner scanner = new Scanner(System.in);
+//        String komenda;
+//        do {
+//            System.out.println("Wybierz polecenie: [add/list/update/delete/quit]");
+//            komenda = scanner.nextLine();
+//            if (komenda.equalsIgnoreCase("add")) {
+//                addPet(dao, scanner);
+//            } else if (komenda.equalsIgnoreCase("list")) {
+//                getAllPets(dao);
+//            } else if (komenda.equalsIgnoreCase("update")) {
+//                updatePet(dao, scanner);
+//            } else if (komenda.equalsIgnoreCase("delete")) {
+//                deletePet(dao, scanner);
+//            }
+//        } while (!komenda.equalsIgnoreCase("quit"));
     }
 
     private static void deletePet(PetDao dao, Scanner scanner) {

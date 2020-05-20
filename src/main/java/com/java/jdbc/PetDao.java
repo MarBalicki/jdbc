@@ -36,11 +36,35 @@ public class PetDao {
         return list;
     }
 
+    public boolean checkDBExists() {
+        Connection connection = null;
+        try {
+            ResultSet databaseExists = connection.getMetaData().getCatalogs();
+            if (databaseExists.next()) {
+                String databaseName = databaseExists.getString(1);
+                if (databaseName != null) {
+                    return true;
+                }
+            }
+            databaseExists.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public void addToDataBase(Pet pet) {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
+//            if (!checkDBExists()) {
+//                connection = DriverManager.getConnection("java27", "xxxx", "xxxxx");
+//                connection.createStatement().execute(PetsTableQueries.CREATE_DATABASE_QUERY);
+//                connection.close();
+//            }
             connection = mysqlConnection.getConnection();
+            connection.createStatement().execute(PetsTableQueries.CREATE_DATABASE_QUERY);
+            connection.createStatement().execute(PetsTableQueries.CREATE_TABLE_QUERY);
             statement = connection.prepareStatement(PetsTableQueries.INSERT_PET_QUERY, Statement.RETURN_GENERATED_KEYS);
             dataStatement(pet, statement);
 //            statement.setLong(6, pet.getId());
