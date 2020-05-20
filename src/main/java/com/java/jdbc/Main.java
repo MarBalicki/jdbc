@@ -7,29 +7,20 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) {
         PetDao dao = new PetDao();
-
-//        Pet pet = Pet.builder()
-//                .name("Abi")
-//                .age(1)
-//                .ownerName("Kamil")
-//                .weight(1.9)
-//                .pureRace(true)
-////                .id(13L)
-//                .build();
-//        dao.addToDataBase(pet);
-//        getAllPets(dao);
 
         Scanner scanner = new Scanner(System.in);
         String komenda;
         do {
-            System.out.println("Wybierz polecenie: [add/list/update/delete/quit]");
+            System.out.println("Wybierz polecenie: [add/list/byID/update/delete/quit]");
             komenda = scanner.nextLine();
             if (komenda.equalsIgnoreCase("add")) {
                 addPet(dao, scanner);
             } else if (komenda.equalsIgnoreCase("list")) {
                 getAllPets(dao);
+            }else if (komenda.equalsIgnoreCase("byID")) {
+                getByID(dao, scanner);
             } else if (komenda.equalsIgnoreCase("update")) {
                 updatePet(dao, scanner);
             } else if (komenda.equalsIgnoreCase("delete")) {
@@ -38,13 +29,23 @@ public class Main {
         } while (!komenda.equalsIgnoreCase("quit"));
     }
 
+    private static void getByID(PetDao dao, Scanner scanner) {
+        System.out.println("Wyszukaj po ID: ");
+        Pet pet = getPet(scanner);
+        dao.getById(pet);
+    }
+
     private static void deletePet(PetDao dao, Scanner scanner) {
         System.out.println("Podaj id do skasowania: ");
+        Pet pet = getPet(scanner);
+        dao.deletePet(pet);
+    }
+
+    private static Pet getPet(Scanner scanner) {
         String id = scanner.nextLine();
-        Pet pet = Pet.builder()
+        return Pet.builder()
                 .id(Long.parseLong(id))
                 .build();
-        dao.deletePet(pet);
     }
 
     private static void updatePet(PetDao dao, Scanner scanner) {

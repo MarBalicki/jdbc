@@ -36,22 +36,22 @@ public class PetDao {
         return list;
     }
 
-    public boolean checkDBExists() {
-        Connection connection = null;
-        try {
-            ResultSet databaseExists = connection.getMetaData().getCatalogs();
-            if (databaseExists.next()) {
-                String databaseName = databaseExists.getString(1);
-                if (databaseName != null) {
-                    return true;
-                }
-            }
-            databaseExists.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
+//    public boolean checkDBExists() {
+//        Connection connection = null;
+//        try {
+//            ResultSet databaseExists = connection.getMetaData().getCatalogs();
+//            if (databaseExists.next()) {
+//                String databaseName = databaseExists.getString(1);
+//                if (databaseName != null) {
+//                    return true;
+//                }
+//            }
+//            databaseExists.close();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return false;
+//    }
 
     public void addToDataBase(Pet pet) {
         Connection connection = null;
@@ -66,8 +66,7 @@ public class PetDao {
 //            connection.createStatement().execute(PetsTableQueries.CREATE_DATABASE_QUERY);
             connection.createStatement().execute(PetsTableQueries.CREATE_TABLE_QUERY);
             statement = connection.prepareStatement(PetsTableQueries.INSERT_PET_QUERY, Statement.RETURN_GENERATED_KEYS);
-            dataStatement(pet, statement);
-//            statement.setLong(6, pet.getId());
+            prepareData(pet, statement);
             int affectedRecords = statement.executeUpdate();
             System.out.println("Dodanych rekordów: " + affectedRecords);
             ResultSet generatedKeys = statement.getGeneratedKeys();
@@ -92,26 +91,26 @@ public class PetDao {
     }
 
     public void updatePet(Pet pet) {
-//        if (pet.getId() == null) {
-//            System.err.println("Pet with that id not exist!");
-//            return;
-//        }
+        if (idNotExist(pet.getId())) {
+            return;
+        }
+        makeUpdatePet(pet);
+    }
+
+    private void makeUpdatePet(Pet pet) {
         try (Connection connection = mysqlConnection.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(PetsTableQueries.UPDATE_PET_QUERY)) {
-                dataStatement(pet, statement);
+                prepareData(pet, statement);
                 statement.setLong(6, pet.getId());
                 int affectedRecords = statement.executeUpdate();
                 System.out.println("Edytowanych rekordów: " + affectedRecords);
-                if (affectedRecords == 0) {
-                    System.err.println("Pet with that id not exist!");
-                }
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }
 
-    private void dataStatement(Pet pet, PreparedStatement statement) throws SQLException {
+    private void prepareData(Pet pet, PreparedStatement statement) throws SQLException {
         statement.setString(1, pet.getName());
         statement.setInt(2, pet.getAge());
         statement.setString(3, pet.getOwnerName());
@@ -120,10 +119,9 @@ public class PetDao {
     }
 
     public void deletePet(Pet pet) {
-//        if (pet.getId() == null) {
-//            System.err.println("Pet with that id not exist!");
-//            return;
-//        }
+        if (idNotExist(pet.getId())) {
+            return;
+        }
         deletePet(pet.getId());
     }
 
@@ -133,13 +131,56 @@ public class PetDao {
                 statement.setLong(1, petId);
                 int affectedRecords = statement.executeUpdate();
                 System.out.println("Wykonanych rekordów: " + affectedRecords);
-                if (affectedRecords == 0) {
-                    System.err.println("Pet with that id not exist!");
-                }
             }
         } catch (SQLException throwables) {
-//            System.err.println("Pet with that id not exist!");
             throwables.printStackTrace();
         }
     }
+
+    public void getById(Pet pet) {
+        if (idNotExist(pet.getId())) {
+            return;
+        }
+        getPet(pet);
+    }
+
+    private void getPet(Pet pet) {
+        try {
+            Connection connection = mysqlConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(PetsTableQueries.ID_PET_QUERY);
+            statement.setLong(1, pet.getId());
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                pet = Pet.builder()
+                        .id(resultSet.getLong(1))
+                        .name(resultSet.getString(2))
+                        .age(resultSet.getInt(3))
+                        .ownerName(resultSet.getString(4))
+                        .weight(resultSet.getDouble(5))
+                        .pureRace(resultSet.getBoolean(6))
+                        .build();
+                System.out.print(pet + "\n");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean idNotExist(Long petId) {
+        try (Connection connection = mysqlConnection.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(PetsTableQueries.ID_PET_QUERY)) {
+                statement.setLong(1, petId);
+                ResultSet set = statement.executeQuery();
+                if (set.absolute(1)) {
+                    return false;
+                }
+                System.err.println("Pet with that id not exist!");
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return true;
+    }
+
+
 }

@@ -13,5 +13,5 @@ public interface PetsTableQueries {
     String SELECT_ALL_PET_QUERY = "SELECT * FROM `pets`;";
     String UPDATE_PET_QUERY = "UPDATE `pets` SET `name` = ?, `age` = ?, `ownerName` = ?, `weight` = ?, `pureRace` = ? where `id` = ?;";
     String DELETE_PET_QUERY = "DELETE FROM `pets` WHERE `id` = ?;";
-//    String ID_PET_QUERY = "select id from pets where id = ?;";
+    String ID_PET_QUERY = "SELECT * FROM `pets` WHERE `id` = ?;";
 }
